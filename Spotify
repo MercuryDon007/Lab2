@@ -1,0 +1,78 @@
+package c10;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class SongsReport {
+
+   public static void main(String[] args) {
+
+       int numberOfFiles = 2;
+       for(int i=1;i<=numberOfFiles;i++){
+
+       }
+       Scanner sc = new Scanner(System.in);
+       //loading name of file
+       File file = new File("songs.csv"); //reading data from this file
+       Scanner reader;
+       String line="";
+
+       int maxArtistPossible = 1000;
+
+       String artists[] = new String[maxArtistPossible];
+       int artistsCount[] = new int[maxArtistPossible];
+
+       int currentIndex=0;
+       //reset count to zero
+       for(int i=0;i<artistsCount.length;i++){
+           artistsCount[i] = 0;
+       }
+       int songRecordCount=0;
+
+       try {
+           reader = new Scanner(file);
+           while(reader.hasNextLine()){
+               songRecordCount++;
+               //read line
+               line = reader.nextLine();
+               String columns[] = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+
+               //Artist will be at position 2
+               String tmpArtist = columns[2];
+
+               //remove quotes from the line
+               tmpArtist = tmpArtist.replaceAll("\"", "");
+               for(String art : tmpArtist.split(",")){
+                   boolean found = false;
+                   for(int i=0;i<currentIndex;i++){
+                       if(art.equalsIgnoreCase(artists[i])){
+                           artistsCount[i]++;
+                           found = true;
+                           break;
+                       }
+                   }
+                   if(!found){
+                       artists[currentIndex] = art;
+                       artistsCount[currentIndex]=1;
+                       currentIndex++;
+                   }
+               }
+           }
+       } catch (FileNotFoundException e) {
+           System.out.println("file not found");
+       }
+
+      
+       System.out.println("Total song loaded : "+songRecordCount);
+       System.out.println("Total unique artist count is : "+currentIndex);
+       System.out.printf("%-25s%s\n","Artist","Occurence count");
+       for(int i=0;i<currentIndex;i++){
+           System.out.printf("%-25s%s\n",artists[i],artistsCount[i]);
+       }
+       sc.close();
+   }
+
+
+}
